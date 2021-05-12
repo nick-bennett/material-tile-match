@@ -5,9 +5,9 @@ import '../model/puzzle.dart';
 import '../model/tile.dart';
 
 class PuzzleViewModel {
-  static const _size = 28;
-  static const _tick = 500;
-  static const _reveal = 3000;
+  static const _size = 28; // FIXME - Take this from settings.
+  static const _defaultDuration = Duration(milliseconds: 500);
+  static const _reveal = 3000; // FIXME - Take this from settings.
 
   final _tileListStreamController;
   final _moveCountStreamController;
@@ -18,7 +18,7 @@ class PuzzleViewModel {
   late Puzzle _puzzle;
   Timer? _tickTimer;
   Timer? _revealTimer;
-  
+
   PuzzleViewModel()
       : _tileListStreamController = StreamController<List<Tile>>(),
         _moveCountStreamController = StreamController<int>(),
@@ -34,11 +34,13 @@ class PuzzleViewModel {
 
   Stream<int> get tickStream => _tickStreamController.stream;
 
-  newPuzzle(int imagePoolSize) {
+  newPuzzle(int imagePoolSize, [Duration tickInterval = _defaultDuration]) {
     _puzzle = Puzzle(_size, imagePoolSize, _rng);
     _tickTimer?.cancel();
-    _tickTimer = Timer.periodic(Duration(milliseconds: _tick),
-            (timer) => _tickStreamController.add(timer.tick));
+    _tickTimer = Timer.periodic(
+        tickInterval,
+        (timer) => _tickStreamController
+            .add(tickInterval.inMilliseconds * timer.tick));
   }
 
   select(int tileIndex) {
@@ -50,8 +52,8 @@ class PuzzleViewModel {
       _matchCountStreamController.add(_puzzle.matches);
       if (_puzzle.state == PuzzleState.revealing) {
         _revealTimer?.cancel();
-        _revealTimer = Timer(Duration(milliseconds: _reveal),
-                () => _unreveal());
+        _revealTimer =
+            Timer(Duration(milliseconds: _reveal), () => _unreveal());
       }
     }
   }
@@ -61,5 +63,4 @@ class PuzzleViewModel {
     _tileListStreamController.add(_puzzle.tiles);
     _moveCountStreamController.add(_puzzle.moves);
   }
-
 }

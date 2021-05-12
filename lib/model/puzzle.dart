@@ -48,9 +48,9 @@ class Puzzle {
           _moves++;
           _state = PuzzleState.revealing;
           tile.state = TileState.selected;
-          if (_selection?.imageIndex == tile.imageIndex) {
+          if (_selection?.pairId == tile.pairId) {
             _matches++;
-            _state = (_matches / 2 >= size)
+            _state = (_matches * 2 >= size)
                 ? PuzzleState.completed
                 : PuzzleState.inProgress;
             tile.state = TileState.solved;
@@ -59,7 +59,7 @@ class Puzzle {
           _selection = null;
           break;
         case PuzzleState.revealing:
-          // Fall-through.
+        // Fall-through.
         case PuzzleState.completed:
           // Ignore the selection.
           break;
@@ -75,7 +75,6 @@ class Puzzle {
       _state = PuzzleState.inProgress;
     }
   }
-
 }
 
 enum PuzzleState { inProgress, guessing, revealing, completed }
