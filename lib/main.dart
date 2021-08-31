@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'model/tile.dart';
 import 'util/formatted_strings.dart';
 import 'view/tile_images.dart';
 import 'viewmodel/puzzle_viewmodel.dart';
@@ -55,20 +56,22 @@ class _TileMatchScreenState extends State<TileMatchScreen> {
         actions: <Widget>[
           StreamBuilder<int>(
             stream: _viewmodel.tickStream,
-            builder: (context, snapshot) => Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    ticksToHms(snapshot.data ?? 0),
-                    style: Theme.of(context)
-                        .textTheme
-                        .subtitle1
-                        ?.merge(TextStyle(color: Colors.white)),
+            builder: (context, snapshot) =>
+                Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        ticksToHms(snapshot.data ?? 0),
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .subtitle1
+                            ?.merge(TextStyle(color: Colors.white)),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
+                ),
           ),
           IconButton(
             icon: Icon(
@@ -92,4 +95,29 @@ class _TileMatchScreenState extends State<TileMatchScreen> {
   }
 
   _newPuzzle() => _viewmodel.newPuzzle(tileImages.length);
+
+  GridView _board(List<Tile> tiles, int width) {
+    final board = GridView.count(
+      primary: false,
+      crossAxisCount: width,
+      padding: const EdgeInsets.all(8),
+      crossAxisSpacing: 8,
+      mainAxisSpacing: 8,
+    );
+    board.ch
+  }
+
+}
+
+class TileDelegate extends SliverChildDelegate {
+  @override
+  Widget? build(BuildContext context, int index) {
+
+  }
+
+  @override
+  bool shouldRebuild(covariant SliverChildDelegate oldDelegate) {
+    return true;
+  }
+
 }
